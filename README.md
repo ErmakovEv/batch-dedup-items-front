@@ -1,73 +1,173 @@
-# React + TypeScript + Vite
+# Список элементов с выбором и сортировкой
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Приложение для работы со списком из 1 000 000 элементов с функционалом выбора, фильтрации и сортировки.
 
-Currently, two official plugins are available:
+## 🚀 Демо
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Frontend:** [https://ErmakovEv.github.io/batch-dedup-items-front](https://ErmakovEv.github.io/batch-dedup-items-front)
 
-## React Compiler
+**Backend API:** [https://batch-dedup-items-back.onrender.com](https://batch-dedup-items-back.onrender.com)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📋 Требования к функционалу
 
-## Expanding the ESLint configuration
+### ✅ Общие требования
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [x] Список из 1 000 000 элементов (ID от 1 до 1 000 000)
+- [x] Интерфейс из двух окон (контейнеров)
+- [x] Результаты сортировки и выбора хранятся на сервере (в памяти)
+- [x] При поиске отображается не более 20 элементов, остальные подгружаются по мере прокрутки
+- [x] Запросы реализованы через очередь с дедупликацией
+- [x] Батчинг добавления элементов раз в 10 сек, получения и изменения данных раз в секунду
+- [x] Учетные записи не требуются (данные общие для всех посетителей)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### ✅ Левое окно
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- [x] Отображает все элементы, кроме выбранных
+- [x] Фильтрация элементов по ID
+- [x] Инфинити-скролл (загрузка по 20 элементов, последующая подгрузка порциями по 20)
+- [x] Добавление новых элементов с произвольным ID (задается вручную)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### ✅ Правое окно
+
+- [x] Отображает выбранные элементы
+- [x] Фильтрация элементов по ID
+- [x] Сортировка элементов с помощью Drag&Drop (работает для отфильтрованного списка)
+- [x] Инфинити-скролл (загрузка по 20 элементов, последующая подгрузка порциями по 20)
+- [x] Сохранение состояния выбора и сортировки между обновлениями страницы (поиск не сохраняется)
+
+## 🛠 Технологии
+
+### Frontend
+
+- **React 19** - UI библиотека
+- **TypeScript** - типизация
+- **Vite** - сборщик и dev-сервер
+- **Redux Toolkit** - управление состоянием
+- **RTK Query** - работа с API
+- **@dnd-kit** - Drag & Drop функционал
+
+### Backend
+
+- **Express.js** - веб-сервер
+- **Node.js** - серверная платформа
+
+## 📦 Установка и запуск
+
+### Предварительные требования
+
+- Node.js (версия 18 или выше)
+- npm или yarn
+
+### Установка зависимостей
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Запуск в режиме разработки
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Приложение будет доступно по адресу: `http://localhost:5173`
+
+### Сборка для production
+
+```bash
+npm run build
+```
+
+Собранные файлы будут в папке `dist/`
+
+### Предпросмотр production сборки
+
+```bash
+npm run preview
+```
+
+### Деплой на GitHub Pages
+
+```bash
+npm run deploy
+```
+
+Этот скрипт:
+
+1. Собирает проект (`npm run build`)
+2. Публикует папку `dist/` в ветку `gh-pages`
+
+После деплоя настройте GitHub Pages в настройках репозитория:
+
+- Settings → Pages
+- Source: ветка `gh-pages`, папка `/ (root)`
+
+## 🔧 Настройка
+
+### Переменные окружения
+
+Создайте файл `.env.production` для production сборки:
+
+```env
+VITE_API_URL=https://batch-dedup-items-back.onrender.com/api/items
+```
+
+Для локальной разработки используется fallback: `http://localhost:3001/api/items`
+
+## 📁 Структура проекта
+
+```
+frontend/
+├── src/
+│   ├── components/        # React компоненты
+│   │   ├── left/         # Левое окно
+│   │   └── right/        # Правое окно
+│   ├── store/            # Redux store
+│   │   ├── api/         # RTK Query API
+│   │   └── store.ts     # Конфигурация store
+│   ├── types/           # TypeScript типы
+│   └── common/          # Общие хуки и утилиты
+├── public/               # Статические файлы
+├── dist/                # Собранные файлы (генерируется)
+└── package.json
+```
+
+## 🎯 Основные возможности
+
+### Левое окно
+
+- **Просмотр всех элементов** - отображаются все элементы, кроме выбранных
+- **Фильтрация** - поиск элементов по ID
+- **Добавление элементов** - ввод нового ID и добавление в список
+- **Бесконечная прокрутка** - автоматическая подгрузка следующих 20 элементов
+
+### Правое окно
+
+- **Просмотр выбранных** - отображаются только выбранные элементы
+- **Фильтрация** - поиск среди выбранных элементов по ID
+- **Drag & Drop сортировка** - перетаскивание элементов для изменения порядка
+- **Сохранение состояния** - порядок и выбор сохраняются на сервере
+- **Бесконечная прокрутка** - автоматическая подгрузка следующих 20 элементов
+
+## 🔄 API
+
+Backend API реализует следующие endpoints:
+
+- `GET /api/items` - получение списка элементов (с пагинацией и фильтрацией)
+- `POST /api/items` - добавление нового элемента
+- `POST /api/items/select` - выбор/снятие выбора элемента
+- `PUT /api/items/reorder` - изменение порядка элементов
+
+Все запросы обрабатываются через очередь с дедупликацией и батчингом.
+
+## 📝 Скрипты
+
+- `npm run dev` - запуск dev-сервера
+- `npm run build` - сборка для production
+- `npm run preview` - предпросмотр production сборки
+- `npm run lint` - проверка кода линтером
+- `npm run deploy` - деплой на GitHub Pages
+
+## 📄 Лицензия
+
+Это тестовое задание.
